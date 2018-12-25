@@ -4,31 +4,31 @@ import * as esgraph from 'esgraph';
 //let lines=[];
 let helpMap=new Map();
 let inputv=new Map();
-let conditions=new Map();
+
 
 let cfg=[];
 let p=0;
-let c=0;
+let counter=0;
 
 
 const parseCode = (codeToParse) => {
     return esprima.parseScript(codeToParse);
 };
-
 function reset() {
     helpMap=new Map();
     inputv=new Map();
-    conditions=new Map();
+    cfg=[];
     p=0;
-    c=0;
+    counter=0;
 }
 
 function checkStart(code,input) {
-    //start(code,input);
+    reset();
     let func=extractFunction(code.body);
     setInputVector(func.params,input);
     cfg=esgraph(func.body);
     setColors(cfg);
+    Numbering(cfg,cfg[2]);
     let ne=controlFlowGraph(cfg);
     let graph=esgraph.dot(cfg);
     let lines=graph.split('\n');
@@ -36,6 +36,31 @@ function checkStart(code,input) {
     lines=lines.join('\n');
     let some =Viz('digraph { '+lines+' }');
     return some;
+}
+
+function Numbering(cfg,start) {
+
+    for (let i = 0; i <start.length ; i++) {
+        if(start[i].astNode!=undefined&&start[i].astNode.type!='BlockStatement'&&start[i].astNode.counter==undefined){
+            start[i].astNode.counter=counter;
+            counter++;
+            idle(cfg,start[i]);
+        }
+    }
+
+}
+function idle(cfg,node) {
+    if(node.astNode.type=='BinaryExpression'){
+        if(node.true.astNode.counter==undefined){
+            node.true.astNode.counter=counter;
+            counter++;
+        }
+        if(node.false.astNode.counter==undefined){
+            node.false.astNode.counter=counter;
+            counter++;
+        }
+    }
+
 }
 
 function changedLines(n,p) {
@@ -76,7 +101,12 @@ function controlFlowGraph(cfg) {
     let newGraph=[];
     for (let i = 1; i <array.length-1 ; i++) {
         let str= getStrings(array[i]);
-        newGraph.push('n'+i+'[label="'+str+',style=filled,color='+array[i].astNode.color+']'); //style=filled
+        if(array[i].astNode.color==='green'){
+            newGraph.push('n'+i+'[label="'+array[i].astNode.counter+' '+str+',style=filled,color='+array[i].astNode.color+']');
+        }
+        else{
+            newGraph.push('n'+i+'[label="'+array[i].astNode.counter+' '+str+']');
+        }//style=filled
     }
     return newGraph;
 }
@@ -139,35 +169,29 @@ function getMembershipString(member) {
 function setColors(cfg) {
     let color='green';
     let locals=new Map();
-    let newCfg=[cfg[0],cfg[1]];
-    let last=[];
     for (let i = 0; i <cfg[2].length ; i++) {
         if(cfg[2][i].astNode!=undefined){
             if(cfg[2][i].astNode.color==undefined){
-                last.push(route(cfg[2][i],color,locals));
-            }
-            else{
-                last.push(cfg[2][i]);
+                let str =route(cfg[2][i],color,locals);
+                if(str==='cut')
+                    return;
             }
         }
     }
-    newCfg.push(last);
-    return newCfg;
 }
 
 function route(node,color,locals) {
-
     if(node.astNode.type=='VariableDeclaration'){
         declarations(node,color,locals);
     }
     if(node.astNode.type=='BinaryExpression'){
-        binaryAsNNode(node,color,locals);
+        return binaryAsNNode(node,color,locals);
     }
     if(node.astNode.type=='AssignmentExpression'){
         assDec(node,color,locals);
     }
     if(node.astNode.type=='ReturnStatement'){
-        returnNode(node,color);
+        return returnNode(node,color);
     }
 }
 
@@ -189,25 +213,29 @@ function assDec(node,color,locals) {
 
 function returnNode(node,color) {
     node.astNode.color=color;
+    if(color)
+        return 'cut';
+    return '';
 }
 
 function binaryAsNNode(node,color,locals) {
-    let str=typeRoute(node.astNode,locals);
+    let str=typeRoute(node.astNode,locals);let ans='';
     if(color=='red'){
-        route(node.false,'red',locals);
-        route(node.true,'red',locals);
+        ans=route(node.false,'red',locals);
+        ans=route(node.true,'red',locals);
     }
     else {
         if(eval(str)){
-            route(node.false,'red',locals);
-            route(node.true,'green',locals);
+            ans=route(node.false,'red',locals);
+            ans=route(node.true,'green',locals);
         }
         else{
-            route(node.false,'green',locals);
-            route(node.true,'red',locals);
+            ans=route(node.true,'red',locals);
+            ans=route(node.false,'green',locals);
         }
     }
-    return node.astNode.color=color;
+    node.astNode.color=color;
+    return ans;
 }
 
 function typeRoute(some,locals) {
