@@ -6,7 +6,7 @@ let helpMap=new Map();
 let inputv=new Map();
 let conditions=new Map();
 
-
+let cfg=[];
 let p=0;
 let c=0;
 
@@ -24,9 +24,11 @@ function reset() {
 }
 
 function checkStart(code,input) {
-    start(code,input);
+    //start(code,input);
     let func=extractFunction(code.body);
-    let cfg=esgraph(func.body);
+    setInputVector(func.params,input);
+    cfg=esgraph(func.body);
+    setColors(cfg);
     let ne=controlFlowGraph(cfg);
     let graph=esgraph.dot(cfg);
     let lines=graph.split('\n');
@@ -74,7 +76,7 @@ function controlFlowGraph(cfg) {
     let newGraph=[];
     for (let i = 1; i <array.length-1 ; i++) {
         let str= getStrings(array[i]);
-        newGraph.push('n'+i+'[label="'+str+',color='+conditions.get(i-1)+']');
+        newGraph.push('n'+i+'[label="'+str+',style=filled,color='+array[i].astNode.color+']'); //style=filled
     }
     return newGraph;
 }
@@ -93,7 +95,7 @@ function getStrings(node) {
         return checkKind(node.astNode.left)+'='+checkKind(node.astNode.right)+'"'+',shape=square';
     }
     else{
-        return 'return '+checkKind(node.astNode.argument)+'"'+',shape=square';
+        return 'return '+checkKind(node.astNode.argument)+'"'+', shape=square';
     }
 }
 
@@ -134,7 +136,154 @@ function getMembershipString(member) {
     return member.object.name+'['+checkKind(member.property)+']';
 }
 
+function setColors(cfg) {
+    let color='green';
+    let locals=new Map();
+    let newCfg=[cfg[0],cfg[1]];
+    let last=[];
+    for (let i = 0; i <cfg[2].length ; i++) {
+        if(cfg[2][i].astNode!=undefined){
+            if(cfg[2][i].astNode.color==undefined){
+                last.push(route(cfg[2][i],color,locals));
+            }
+            else{
+                last.push(cfg[2][i]);
+            }
+        }
+    }
+    newCfg.push(last);
+    return newCfg;
+}
 
+function route(node,color,locals) {
+
+    if(node.astNode.type=='VariableDeclaration'){
+        declarations(node,color,locals);
+    }
+    if(node.astNode.type=='BinaryExpression'){
+        binaryAsNNode(node,color,locals);
+    }
+    if(node.astNode.type=='AssignmentExpression'){
+        assDec(node,color,locals);
+    }
+    if(node.astNode.type=='ReturnStatement'){
+        returnNode(node,color);
+    }
+}
+
+function declarations(node,color,locals) {
+    node.astNode.color=color;
+    for (let i = 0; i <node.astNode.declarations.length ; i++) {
+        varDec(node.astNode.declarations[i],color,locals);
+    }
+}
+
+function varDec(node,color,locals) {
+    locals.set(typeRoute(node.id,locals),typeRoute(node.init,locals));
+}
+
+function assDec(node,color,locals) {
+    node.astNode.color=color;
+    locals.set(typeRoute(node.astNode.left,locals),typeRoute(node.astNode.right,locals));
+}
+
+function returnNode(node,color) {
+    node.astNode.color=color;
+}
+
+function binaryAsNNode(node,color,locals) {
+    let str=typeRoute(node.astNode,locals);
+    if(color=='red'){
+        route(node.false,'red',locals);
+        route(node.true,'red',locals);
+    }
+    else {
+        if(eval(str)){
+            route(node.false,'red',locals);
+            route(node.true,'green',locals);
+        }
+        else{
+            route(node.false,'green',locals);
+            route(node.true,'red',locals);
+        }
+    }
+    return node.astNode.color=color;
+}
+
+function typeRoute(some,locals) {
+    if(some.type=='Literal')
+        return some.value;
+    else if(some.type=='Identifier'){
+        return identifier(some,locals);
+    }
+    else if(some.type=='UnaryExpression'){
+        return unaryExpression(some,locals);
+    }
+    else if(some.type=='BinaryExpression'){
+        return binaryExpression(some,locals);
+    }
+    else{ //member ship
+        return memberExpression(some,locals);
+    }
+}
+
+function identifier(id,locals) {
+    if(locals.has(id.name))
+        return locals.get(id.name);
+    if(inputv.has(id.name))
+        return inputv.get(id.name);
+    return id.name;
+}
+
+function unaryExpression(unary,locals) {
+    let arg=unary.argument;
+    let operator=unary.operator;
+    return operator+'('+typeRoute(arg,locals)+')';
+}
+
+function binaryExpression(binary,locals) {
+    let left=binary.left;
+    let right=binary.right;
+    let operator=binary.operator;
+    return '('+ typeRoute(left,locals)+operator+typeRoute(right,locals)+')';
+}
+
+function memberExpression(exp,locals) {
+    let object=exp.object;
+    let property=exp.property;
+    return object.name+'['+typeRoute(property,locals)+']';
+}
+
+
+
+//set params in input vector
+function setInputVector(params,input) {
+    setParams(params);
+    setParamsInputVector(input);
+}
+
+function setParams(params) {
+    for (let i = 0; i <params.length ; i++) {
+        helpMap.set(p,params[i].name);
+        p++;
+    }
+}
+
+function setParamsInputVector(input) {
+    let exp = input.body[0].expression.expressions;
+    for (let i = 0; i <exp.length ; i++) {
+        if(exp[i].type=='Literal'){
+            inputv.set(helpMap.get(i),exp[i].value);
+        }
+        if(exp[i].type=='ArrayExpression'){
+            for (let j = 0; j < exp[i].elements.length; j++) {
+                inputv.set(helpMap.get(i) + '[' + j + ']', exp[i].elements[j].value);
+            }
+        }
+    }
+}
+
+/*
 function start(code,inputvector) {
     reset();
     let func=extractFunction(code.body);
@@ -359,5 +508,6 @@ function putall(locals,pre) {
         locals.set(key,pre.get(key));
     }
 }
+*/
 
 export {parseCode,checkStart};
