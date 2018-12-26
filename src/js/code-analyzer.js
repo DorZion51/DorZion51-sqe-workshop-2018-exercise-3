@@ -1,5 +1,5 @@
 import * as esprima from 'esprima';
-const Viz = require('viz.js');
+//const Viz = require('viz.js');
 import * as esgraph from 'esgraph';
 //let lines=[];
 let helpMap=new Map();
@@ -24,7 +24,7 @@ function reset() {
 
 function checkStart(code,input) {
     reset();
-    let func=extractFunction(code.body);
+    let func=code.body[0];
     setInputVector(func.params,input);
     cfg=esgraph(func.body);
     setColors(cfg);
@@ -34,7 +34,7 @@ function checkStart(code,input) {
     let lines=graph.split('\n');
     lines=changedLines(ne,lines);
     lines=lines.join('\n');
-    let some =Viz('digraph { '+lines+' }');
+    let some =lines;
     return some;
 }
 
@@ -88,14 +88,6 @@ function deleteStartEnd(p,line) {
     return newp;
 }
 
-function extractFunction(bodyArr) {
-    for (let i = 0; i <bodyArr.length ; i++) {
-        if(bodyArr[i].type=='FunctionDeclaration'){
-            return bodyArr[i];
-        }
-    }
-}
-
 function controlFlowGraph(cfg) {
     let array=cfg[2];
     let newGraph=[];
@@ -132,8 +124,22 @@ function getStrings(node) {
 function getVarDecString(dec) {
     let str='';
     for (let i = 0; i <dec.length ; i++) {
-        str+=dec[i].id.name+'='+checkKind(dec[i].init);
+        if(dec[i].init.type=='ArrayExpression'){
+            str+=dec[i].id.name+'='+getArrayString(dec[i].init.elements);
+        }
+        else{
+            str+=dec[i].id.name+'='+checkKind(dec[i].init);
+        }
     }
+    return str;
+}
+
+function getArrayString(elements) {
+    let str='[';
+    for (let i = 0; i <elements.length ; i++) {
+        str+=checkKind(elements[i])+',';
+    }
+    str=str.substring(0,str.length-1)+']';
     return str;
 }
 
@@ -181,15 +187,21 @@ function setColors(cfg) {
 }
 
 function route(node,color,locals) {
-    if(node.astNode.type=='VariableDeclaration'){
-        declarations(node,color,locals);
+    if(node.astNode!=undefined){
+        if(node.astNode.type=='VariableDeclaration'){
+            declarations(node,color,locals);
+        }
+        if(node.astNode.type=='BinaryExpression'){
+            return binaryAsNNode(node,color,locals);
+        }
+        if(node.astNode.type=='AssignmentExpression'){
+            assDec(node,color,locals);
+        }
+        return continueR(node,color);
     }
-    if(node.astNode.type=='BinaryExpression'){
-        return binaryAsNNode(node,color,locals);
-    }
-    if(node.astNode.type=='AssignmentExpression'){
-        assDec(node,color,locals);
-    }
+}
+
+function continueR(node,color) {
     if(node.astNode.type=='ReturnStatement'){
         return returnNode(node,color);
     }
@@ -203,7 +215,12 @@ function declarations(node,color,locals) {
 }
 
 function varDec(node,color,locals) {
-    locals.set(typeRoute(node.id,locals),typeRoute(node.init,locals));
+    if(node.init.type=='ArrayExpression'){
+        array(node,locals);
+    }
+    else {
+        locals.set(typeRoute(node.id, locals), typeRoute(node.init, locals));
+    }
 }
 
 function assDec(node,color,locals) {
@@ -215,7 +232,6 @@ function returnNode(node,color) {
     node.astNode.color=color;
     if(color)
         return 'cut';
-    return '';
 }
 
 function binaryAsNNode(node,color,locals) {
@@ -255,6 +271,15 @@ function typeRoute(some,locals) {
     }
 }
 
+
+
+function array(node,locals){
+    let name=typeRoute(node.id,locals);
+    for(let i=0;i<node.init.elements.length;i++){
+        locals.set(name+'['+i+']',typeRoute(node.init.elements[i],locals));
+    }
+}
+
 function identifier(id,locals) {
     if(locals.has(id.name))
         return locals.get(id.name);
@@ -279,7 +304,11 @@ function binaryExpression(binary,locals) {
 function memberExpression(exp,locals) {
     let object=exp.object;
     let property=exp.property;
-    return object.name+'['+typeRoute(property,locals)+']';
+    let str= object.name+'['+typeRoute(property,locals)+']';
+    if(locals.has(str))
+        return locals.get(str);
+    if(inputv.has(str))
+        return inputv.get(str);
 }
 
 

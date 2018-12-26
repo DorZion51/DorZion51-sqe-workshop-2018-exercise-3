@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import {parseCode,checkStart} from './code-analyzer';
 //import * as flowchart from 'flowchart.js';
-
+const Viz=require('viz.js');
 
 
 $(document).ready(function () {
@@ -10,7 +10,8 @@ $(document).ready(function () {
         let inputToParse = $('#inputVector').val();
         let input=parseCode(inputToParse);
         let parsedCode = parseCode(codeToParse);
-        let some=checkStart(parsedCode,input);
+        let lines=checkStart(parsedCode,input);
+        let some=Viz('digraph { '+lines+' }');
         //let code=start(parsedCode,input);
         //draw(code);
         //$('#parsedCode').val(JSON.stringify(parsedCode, null, 2));
