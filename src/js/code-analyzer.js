@@ -96,10 +96,12 @@ function controlFlowGraph(cfg) {
     for (let i = 1; i <array.length-1 ; i++) {
         let str= getStrings(array[i]);
         if(array[i].astNode.color==='green'){
-            newGraph.push('n'+i+'[label="'+array[i].astNode.counter+' '+str+',style=filled,color='+array[i].astNode.color+']');
+            newGraph.push('n'+i+'[label="('+array[i].astNode.counter+') '+str+',style=filled,color='+array[i].astNode.color+']');
+            // newGraph.push('n'+i+'[xlabel="'+array[i].astNode.counter+'",label="'+str+',style=filled,color='+array[i].astNode.color+']');
         }
         else{
-            newGraph.push('n'+i+'[label="'+array[i].astNode.counter+' '+str+']');
+            newGraph.push('n'+i+'[label="('+array[i].astNode.counter+') '+str+']');
+            //newGraph.push('n'+i+'[xlabel ="'+array[i].astNode.counter+'",label="'+str+']');
         }//style=filled
     }
     return newGraph;

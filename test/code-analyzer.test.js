@@ -13,11 +13,11 @@ let func1='function foo ( a , b )  {\n' +
     ' }\n' +
     '}';
 let input1='1,2';
-let output1='n1[label="0 c=1",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 (b>a)",shape=diamond,style=filled,color=green]\n' +
-    'n3[label="2 return b", shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (a==2)",shape=diamond]\n' +
-    'n5[label="4 c=2",shape=square]\n' +
+let output1='n1[label="(0) c=1",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) (b>a)",shape=diamond,style=filled,color=green]\n' +
+    'n3[label="(2) return b", shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (a==2)",shape=diamond]\n' +
+    'n5[label="(4) c=2",shape=square]\n' +
     'n1 -> n2 []\n' +
     'n2 -> n3 [label="true"]\n' +
     'n2 -> n4 [label="false"]\n' +
@@ -35,9 +35,9 @@ let func2='function foo ( a , b )  {\n' +
     ' return a;\n' +
     '}';
 let input2='1,2';
-let output2='n1[label="0 (b>a)",shape=diamond,style=filled,color=green]\n' +
-    'n2[label="1 return b", shape=square,style=filled,color=green]\n' +
-    'n3[label="2 return a", shape=square]\n' +
+let output2='n1[label="(0) (b>a)",shape=diamond,style=filled,color=green]\n' +
+    'n2[label="(1) return b", shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) return a", shape=square]\n' +
     'n1 -> n2 [label="true"]\n' +
     'n1 -> n3 [label="false"]\n' +
     '\n' +
@@ -54,12 +54,12 @@ let func3='function foo ( a , b )  {\n' +
     ' }\n' +
     '}';
 let input3='1,[2,5]';
-let output3='n1[label="0 c=-(1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 d=b[1]",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 (d<a)",shape=diamond,style=filled,color=green]\n' +
-    'n4[label="3 return b", shape=square]\n' +
-    'n5[label="4 (a==2)",shape=diamond,style=filled,color=green]\n' +
-    'n6[label="5 c=2",shape=square]\n' +
+let output3='n1[label="(0) c=-(1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) d=b[1]",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) (d<a)",shape=diamond,style=filled,color=green]\n' +
+    'n4[label="(3) return b", shape=square]\n' +
+    'n5[label="(4) (a==2)",shape=diamond,style=filled,color=green]\n' +
+    'n6[label="(5) c=2",shape=square]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
@@ -84,12 +84,12 @@ let func4='function foo ( a , b )  {\n' +
     ' }\n' +
     '}';
 let input4='1,2';
-let output4='n1[label="0 c=[1,2]",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 d=c[1]",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 (d<a)",shape=diamond,style=filled,color=green]\n' +
-    'n4[label="3 return b", shape=square]\n' +
-    'n5[label="4 (a==2)",shape=diamond,style=filled,color=green]\n' +
-    'n6[label="5 c=2",shape=square]\n' +
+let output4='n1[label="(0) c=[1,2]",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) d=c[1]",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) (d<a)",shape=diamond,style=filled,color=green]\n' +
+    'n4[label="(3) return b", shape=square]\n' +
+    'n5[label="(4) (a==2)",shape=diamond,style=filled,color=green]\n' +
+    'n6[label="(5) c=2",shape=square]\n' +
     'n1 -> n2 []\n' +
     'n2 -> n3 []\n' +
     '\n' +
@@ -118,15 +118,15 @@ let func5='function foo(x, y, z){\n' +
     '    return c;\n' +
     '}\n';
 let input5='1,2,3';
-let output5='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=0",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (b<z)",shape=diamond,style=filled,color=green]\n' +
-    'n5[label="4 c=(c+5)",shape=square]\n' +
-    'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
-    'n9[label="8 c=((c+z)+5)",shape=square]\n' +
+let output5='n1[label="(0) a=(x+1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) b=(a+y)",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) c=0",shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (b<z)",shape=diamond,style=filled,color=green]\n' +
+    'n5[label="(4) c=(c+5)",shape=square]\n' +
+    'n6[label="(6) return c", shape=square,style=filled,color=green]\n' +
+    'n7[label="(5) (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="(7) c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
+    'n9[label="(8) c=((c+z)+5)",shape=square]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
@@ -162,15 +162,15 @@ let func6='function foo(x, y, z){\n' +
     '    return c;\n' +
     '}\n';
 let input6='3,2,1';
-let output6='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=0",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (b<z)",shape=diamond,style=filled,color=green]\n' +
-    'n5[label="4 c=(c+5)",shape=square]\n' +
-    'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square]\n' +
-    'n9[label="8 c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
+let output6='n1[label="(0) a=(x+1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) b=(a+y)",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) c=0",shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (b<z)",shape=diamond,style=filled,color=green]\n' +
+    'n5[label="(4) c=(c+5)",shape=square]\n' +
+    'n6[label="(6) return c", shape=square,style=filled,color=green]\n' +
+    'n7[label="(5) (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="(7) c=((c+x)+5)",shape=square]\n' +
+    'n9[label="(8) c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
@@ -206,15 +206,15 @@ let func7='function foo(x, y, z){\n' +
     '    return c;\n' +
     '}\n';
 let input7='3,1,2';
-let output7='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=0",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (b<z)",shape=diamond,style=filled,color=green]\n' +
-    'n5[label="4 c=(c+5)",shape=square]\n' +
-    'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square]\n' +
-    'n9[label="8 c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
+let output7='n1[label="(0) a=(x+1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) b=(a+y)",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) c=0",shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (b<z)",shape=diamond,style=filled,color=green]\n' +
+    'n5[label="(4) c=(c+5)",shape=square]\n' +
+    'n6[label="(6) return c", shape=square,style=filled,color=green]\n' +
+    'n7[label="(5) (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="(7) c=((c+x)+5)",shape=square]\n' +
+    'n9[label="(8) c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
@@ -250,15 +250,15 @@ let func8='function foo(x, y, z){\n' +
     '    return c;\n' +
     '}\n';
 let input8='1,3,2';
-let output8='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=0",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (b<z)",shape=diamond,style=filled,color=green]\n' +
-    'n5[label="4 c=(c+5)",shape=square]\n' +
-    'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square]\n' +
-    'n9[label="8 c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
+let output8='n1[label="(0) a=(x+1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) b=(a+y)",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) c=0",shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (b<z)",shape=diamond,style=filled,color=green]\n' +
+    'n5[label="(4) c=(c+5)",shape=square]\n' +
+    'n6[label="(6) return c", shape=square,style=filled,color=green]\n' +
+    'n7[label="(5) (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="(7) c=((c+x)+5)",shape=square]\n' +
+    'n9[label="(8) c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
@@ -294,15 +294,15 @@ let func9='function foo(x, y, z){\n' +
     '    return c;\n' +
     '}\n';
 let input9='1,2,\'helo\'';
-let output9='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=helo",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (hello==z)",shape=diamond,style=filled,color=green]\n' +
-    'n5[label="4 c=(c+5)",shape=square]\n' +
-    'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (c==z)",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
-    'n9[label="8 c=(c+5)",shape=square]\n' +
+let output9='n1[label="(0) a=(x+1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) b=(a+y)",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) c=helo",shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (hello==z)",shape=diamond,style=filled,color=green]\n' +
+    'n5[label="(4) c=(c+5)",shape=square]\n' +
+    'n6[label="(6) return c", shape=square,style=filled,color=green]\n' +
+    'n7[label="(5) (c==z)",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="(7) c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
+    'n9[label="(8) c=(c+5)",shape=square]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
@@ -338,15 +338,15 @@ let func10='function foo(x, y, z){\n' +
     '    return c;\n' +
     '}\n';
 let input10='7,11,12';
-let output10='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
-    'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=0",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (b<z)",shape=diamond,style=filled,color=green]\n' +
-    'n5[label="4 c=(c+5)",shape=square]\n' +
-    'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
-    'n9[label="8 c=((c+z)+5)",shape=square]\n' +
+let output10='n1[label="(0) a=(x+1)",shape=square,style=filled,color=green]\n' +
+    'n2[label="(1) b=(a+y)",shape=square,style=filled,color=green]\n' +
+    'n3[label="(2) c=0",shape=square,style=filled,color=green]\n' +
+    'n4[label="(3) (b<z)",shape=diamond,style=filled,color=green]\n' +
+    'n5[label="(4) c=(c+5)",shape=square]\n' +
+    'n6[label="(6) return c", shape=square,style=filled,color=green]\n' +
+    'n7[label="(5) (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="(7) c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
+    'n9[label="(8) c=((c+z)+5)",shape=square]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
