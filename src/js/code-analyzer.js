@@ -63,6 +63,8 @@ function idle(cfg,node) {
 
 }
 
+
+
 function changedLines(n,p) {
     for (let i = 1; i <n.length+1 ; i++) {
         p[i]=n[i-1];
@@ -256,7 +258,7 @@ function binaryAsNNode(node,color,locals) {
 
 function typeRoute(some,locals) {
     if(some.type=='Literal')
-        return some.value;
+        return literal(some);
     else if(some.type=='Identifier'){
         return identifier(some,locals);
     }
@@ -271,7 +273,14 @@ function typeRoute(some,locals) {
     }
 }
 
-
+function literal(literal) {
+    if(isNaN(literal.value)){
+        return literal.raw;
+    }
+    else{
+        return literal.value;
+    }
+}
 
 function array(node,locals){
     let name=typeRoute(node.id,locals);
@@ -330,7 +339,7 @@ function setParamsInputVector(input) {
     let exp = input.body[0].expression.expressions;
     for (let i = 0; i <exp.length ; i++) {
         if(exp[i].type=='Literal'){
-            inputv.set(helpMap.get(i),exp[i].value);
+            inputv.set(helpMap.get(i),typeRoute(exp[i],[]));
         }
         if(exp[i].type=='ArrayExpression'){
             for (let j = 0; j < exp[i].elements.length; j++) {

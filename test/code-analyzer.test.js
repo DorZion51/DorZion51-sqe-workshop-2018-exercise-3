@@ -281,28 +281,28 @@ let output8='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
 let func9='function foo(x, y, z){\n' +
     '    let a = x + 1;\n' +
     '    let b = a + y;\n' +
-    '    let c = 0;\n' +
+    '    let c = \'helo\';\n' +
     '    \n' +
-    '    if (b < z) {\n' +
+    '    if (\'hello\'==z) {\n' +
     '        c = c + 5;\n' +
-    '    } else if (b < z * 2) {\n' +
+    '    } else if (c == z) {\n' +
     '        c = c + x + 5;\n' +
     '    } else {\n' +
-    '        c = c + z + 5;\n' +
+    '        c = c  + 5;\n' +
     '    }\n' +
     '    \n' +
     '    return c;\n' +
     '}\n';
-let input9='1,1,1';
+let input9='1,2,\'helo\'';
 let output9='n1[label="0 a=(x+1)",shape=square,style=filled,color=green]\n' +
     'n2[label="1 b=(a+y)",shape=square,style=filled,color=green]\n' +
-    'n3[label="2 c=0",shape=square,style=filled,color=green]\n' +
-    'n4[label="3 (b<z)",shape=diamond,style=filled,color=green]\n' +
+    'n3[label="2 c=helo",shape=square,style=filled,color=green]\n' +
+    'n4[label="3 (hello==z)",shape=diamond,style=filled,color=green]\n' +
     'n5[label="4 c=(c+5)",shape=square]\n' +
     'n6[label="6 return c", shape=square,style=filled,color=green]\n' +
-    'n7[label="5 (b<(z*2))",shape=diamond,style=filled,color=green]\n' +
-    'n8[label="7 c=((c+x)+5)",shape=square]\n' +
-    'n9[label="8 c=((c+z)+5)",shape=square,style=filled,color=green]\n' +
+    'n7[label="5 (c==z)",shape=diamond,style=filled,color=green]\n' +
+    'n8[label="7 c=((c+x)+5)",shape=square,style=filled,color=green]\n' +
+    'n9[label="8 c=(c+5)",shape=square]\n' +
     'n1 -> n2 []\n' +
     '\n' +
     'n2 -> n3 []\n' +
